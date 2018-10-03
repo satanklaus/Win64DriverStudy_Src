@@ -1,3 +1,3 @@
-VMWARE��https://my.vmware.com/cn/web/vmware/details?downloadGroup=WKST-1001-WIN&productId=362&rPId=4548�����к����������ùȸ�������
-WINDBG���������أ��ڰ�װWDKʱ�ͻ��Դ���
-VirtualKD��http://virtualkd.sysprogs.org 
+VIRTUALBOX：https://www.virtualbox.org/wiki/Downloads #здесь уходим от предложенного китайскими товарищами VMWare
+WINDBG：входит в состав WDK #вроде можно загрузить отдельно
+VirtualKD：http://virtualkd.sysprogs.org 
