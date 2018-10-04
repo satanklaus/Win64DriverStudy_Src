@@ -1,6 +1,14 @@
-#include <ntddk.h>
+#include <windows.h>
+//WDM.H
 
-void nullproc()
+typedef dbgprint
+
+//void nullproc()
+void main()
 {
-	DbgPrint("nullproc\n");
+	HANDLE ntdll = LoadLibrary("ntdll.dll");
+	GetProcAddress(ntdll, "DbgPrint");
+//	DbgPrint("nullproc\n");
+	FreeLibrary(ntdll);
+
 }
