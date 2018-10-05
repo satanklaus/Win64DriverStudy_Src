@@ -1,14 +1,4 @@
-#include <windows.h>
-#include <stdio.h>
-//WDM.H
+//ULONG __cdecl DbgPrint ( _In_z_ _Printf_format_string_ PCSTR Format, ...);
+int __cdecl DbgPrint (char* Format, ...);
 
-//void nullproc()
-int main()
-{
-	ULONG __cdecl DbgPrint (
-		_In_z_ _Printf_format_string_ PCSTR Format, ...			
-			);
-
-	printf("status: %X\n",DbgPrint("nullproc\n"));
-//	printf("status: %X\n",STATUS_SUCCESS);
-}
+int main() { DbgPrint("DebugStringHere\n"); }
