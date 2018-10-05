@@ -1,14 +1,14 @@
 #include <windows.h>
+#include <stdio.h>
 //WDM.H
 
-typedef dbgprint
-
 //void nullproc()
-void main()
+int main()
 {
-	HANDLE ntdll = LoadLibrary("ntdll.dll");
-	GetProcAddress(ntdll, "DbgPrint");
-//	DbgPrint("nullproc\n");
-	FreeLibrary(ntdll);
+	ULONG __cdecl DbgPrint (
+		_In_z_ _Printf_format_string_ PCSTR Format, ...			
+			);
 
+	printf("status: %X\n",DbgPrint("nullproc\n"));
+//	printf("status: %X\n",STATUS_SUCCESS);
 }
