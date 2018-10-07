@@ -103,7 +103,9 @@ NTSTATUS DispatchIoctl(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 	return status;
 }
 
+
 //【7】驱动加载的处理例程，里面进行了驱动的初始化工作
+//Bill says: DriverEntry is the first routine called after a driver is loaded, and is responsible for initializing the driver.
 NTSTATUS DriverEntry(PDRIVER_OBJECT pDriverObj, PUNICODE_STRING pRegistryString)
 {
 	NTSTATUS status = STATUS_SUCCESS;
