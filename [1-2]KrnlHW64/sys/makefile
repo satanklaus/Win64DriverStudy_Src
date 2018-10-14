@@ -1,4 +1,4 @@
-TARGET = minimal.sys
+TARGET = first.sys
 INCLUDE = /c/msys64/usr/include/w32api/ddk
 LIB = /c/msys64/usr/lib/w32api
 CFLAGS = -I $(INCLUDE) -DMINGW -std=c99 -m64
@@ -9,5 +9,5 @@ LDFLAGS = -shared -lntoskrnl -Wl,--subsystem,native -Wl,--image-base,0x10000 -Wl
 all: $(TARGET)
 clean:
 	rm -f *.o $(TARGET)
-minimal.sys: minimal.c
+first.sys: first.c
 	gcc  $< $(CFLAGS) $(LDFLAGS) -o $@
