@@ -3,8 +3,14 @@
 #include <windef.h>
 #include <stdlib.h>
 
+VOID DriverUnload(PDRIVER_OBJECT pDriverObj)
+{	
+	DbgPrint("[KrnlHW64]ByeBye, Kernel!\n");
+}
+
 NTSTATUS DriverEntry(PDRIVER_OBJECT pDriverObj, PUNICODE_STRING pRegistryString)
 {
-	DbgPrint("[KrnlHW64]HelloBustu\n");
+	pDriverObj->DriverUnload = DriverUnload;
+	DbgPrint("[KrnlHW64]Hello, Kernel!\n");
 	return STATUS_SUCCESS;
 }

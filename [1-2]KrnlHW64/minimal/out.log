@@ -1,0 +1,37 @@
+Using built-in specs.
+COLLECT_GCC=gcc
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-msys/7.3.0/lto-wrapper.exe
+Target: x86_64-pc-msys
+Configured with: /msys_scripts/gcc/src/gcc-7.3.0/configure --build=x86_64-pc-msys --prefix=/usr --libexecdir=/usr/lib --enable-bootstrap --enable-shared --enable-shared-libgcc --enable-static --enable-version-specific-runtime-libs --with-arch=x86-64 --with-tune=generic --disable-multilib --enable-__cxa_atexit --with-dwarf2 --enable-languages=c,c++,fortran,lto --enable-graphite --enable-threads=posix --enable-libatomic --enable-libcilkrts --enable-libgomp --enable-libitm --enable-libquadmath --enable-libquadmath-support --disable-libssp --disable-win32-registry --disable-symvers --with-gnu-ld --with-gnu-as --disable-isl-version-check --enable-checking=release --without-libiconv-prefix --without-libintl-prefix --with-system-zlib --enable-linker-build-id --with-default-libstdcxx-abi=gcc4-compatible
+Thread model: posix
+gcc version 7.3.0 (GCC) 
+COLLECT_GCC_OPTIONS='-v' '-I' '/c/msys/usr/include/w32api/ddk' '-D' 'MINGW' '-std=c99' '-m64' '-shared' '-nostartfiles' '-nostdlib' '-o' 'brand.sys' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-pc-msys/7.3.0/cc1.exe -quiet -v -I /c/msys/usr/include/w32api/ddk -Dunix -idirafter /usr/lib/../lib/../include/w32api -idirafter /usr/lib/gcc/x86_64-pc-msys/7.3.0/../../../../x86_64-pc-msys/lib/../lib/../../include/w32api -D MINGW minimal.c -quiet -dumpbase minimal.c -m64 -mtune=generic -march=x86-64 -auxbase minimal -std=c99 -version -o /tmp/ccKBrdWn.s
+GNU C99 (GCC) version 7.3.0 (x86_64-pc-msys)
+	compiled by GNU C version 7.3.0, GMP version 6.1.2, MPFR version 4.0.1, MPC version 1.1.0, isl version isl-0.19-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/usr/local/include"
+ignoring nonexistent directory "/usr/lib/gcc/x86_64-pc-msys/7.3.0/../../../../x86_64-pc-msys/include"
+ignoring duplicate directory "/usr/lib/gcc/x86_64-pc-msys/7.3.0/../../../../x86_64-pc-msys/lib/../lib/../../include/w32api"
+#include "..." search starts here:
+#include <...> search starts here:
+ /c/msys/usr/include/w32api/ddk
+ /usr/lib/gcc/x86_64-pc-msys/7.3.0/include
+ /usr/lib/gcc/x86_64-pc-msys/7.3.0/include-fixed
+ /usr/include
+ /usr/lib/../lib/../include/w32api
+End of search list.
+GNU C99 (GCC) version 7.3.0 (x86_64-pc-msys)
+	compiled by GNU C version 7.3.0, GMP version 6.1.2, MPFR version 4.0.1, MPC version 1.1.0, isl version isl-0.19-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 8b84281f8be9d4bd84d90c81771c1563
+COLLECT_GCC_OPTIONS='-v' '-I' '/c/msys/usr/include/w32api/ddk' '-D' 'MINGW' '-std=c99' '-m64' '-shared' '-nostartfiles' '-nostdlib' '-o' 'brand.sys' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-pc-msys/7.3.0/../../../../x86_64-pc-msys/bin/as.exe -v -I /c/msys/usr/include/w32api/ddk --64 -o /tmp/ccy7hXhm.o /tmp/ccKBrdWn.s
+GNU assembler version 2.30 (x86_64-pc-msys) using BFD version (GNU Binutils) 2.30
+COMPILER_PATH=/usr/lib/gcc/x86_64-pc-msys/7.3.0/:/usr/lib/gcc/x86_64-pc-msys/7.3.0/:/usr/lib/gcc/x86_64-pc-msys/:/usr/lib/gcc/x86_64-pc-msys/7.3.0/:/usr/lib/gcc/x86_64-pc-msys/:/usr/lib/gcc/x86_64-pc-msys/7.3.0/../../../../x86_64-pc-msys/bin/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-msys/7.3.0/:/usr/lib/gcc/x86_64-pc-msys/7.3.0/../../../../x86_64-pc-msys/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-msys/7.3.0/../../../../x86_64-pc-msys/lib/:/usr/lib/:/usr/lib/w32api/
+COLLECT_GCC_OPTIONS='-v' '-I' '/c/msys/usr/include/w32api/ddk' '-D' 'MINGW' '-std=c99' '-m64' '-shared' '-nostartfiles' '-nostdlib' '-o' 'brand.sys' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-pc-msys/7.3.0/collect2.exe -plugin /usr/lib/gcc/x86_64-pc-msys/7.3.0/msys-lto_plugin.dll -plugin-opt=/usr/lib/gcc/x86_64-pc-msys/7.3.0/lto-wrapper.exe -plugin-opt=-fresolution=/tmp/ccdYMCsi.res --build-id -m i386pep --wrap _Znwm --wrap _Znam --wrap _ZdlPv --wrap _ZdaPv --wrap _ZnwmRKSt9nothrow_t --wrap _ZnamRKSt9nothrow_t --wrap _ZdlPvRKSt9nothrow_t --wrap _ZdaPvRKSt9nothrow_t --shared -Bdynamic -e _msys_dll_entry --enable-auto-image-base --dll-search-prefix=msys- -o brand.sys -L/usr/lib/gcc/x86_64-pc-msys/7.3.0 -L/usr/lib/gcc/x86_64-pc-msys/7.3.0/../../../../x86_64-pc-msys/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-msys/7.3.0/../../../../x86_64-pc-msys/lib -L/usr/lib/w32api /tmp/ccy7hXhm.o -lntoskrnl --subsystem native --image-base 0x10000 --file-alignment 0x1000 --section-alignment 0x1000 --entry DriverEntry@8 --stack 0x40000 --dynamicbase --nxcompat
+COLLECT_GCC_OPTIONS='-v' '-I' '/c/msys/usr/include/w32api/ddk' '-D' 'MINGW' '-std=c99' '-m64' '-shared' '-nostartfiles' '-nostdlib' '-o' 'brand.sys' '-mtune=generic' '-march=x86-64'
