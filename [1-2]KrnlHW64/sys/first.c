@@ -1,5 +1,4 @@
 #define __INTRINSIC_DEFINED__InterlockedAdd64
-/*Test commit*/
 /*
 	WIN64驱动开发模板
 	作者：Tesla.Angela
@@ -8,12 +7,12 @@
 //【0】包含的头文件，可以加入系统或自己定义的头文件
 #include <ntddk.h>
 #include <windef.h>
-#include <stdlib.h>
+
+#define DRVNAME "InKrnlHW64"
 
 //【1】定义符号链接，一般来说修改为驱动的名字即可
 #define	DEVICE_NAME			L"\\Device\\KrnlHW64"
-#define LINK_NAME			L"\\DosDevices\\KrnlHW64"
-#define LINK_GLOBAL_NAME	L"\\DosDevices\\Global\\KrnlHW64"
+#define LINK_GLOBAL_NAME	L"\\DosDevices\\KrnlHW64"
 
 //【2】定义驱动功能号和名字，提供接口给应用程序调用
 #define IOCTL_IO_TEST		CTL_CODE(FILE_DEVICE_UNKNOWN, 0x800, METHOD_BUFFERED, FILE_ANY_ACCESS)
@@ -25,7 +24,7 @@ VOID DriverUnload(PDRIVER_OBJECT pDriverObj)
 	UNICODE_STRING strLink;
 	DbgPrint("[KrnlHW64]DriverUnload\n");
 	//删除符号连接和设备
-	RtlInitUnicodeString(&strLink, LINK_NAME);
+	RtlInitUnicodeString(&strLink, LINK_GLOBAL_NAME);
 	IoDeleteSymbolicLink(&strLink);
 	IoDeleteDevice(pDriverObj->DeviceObject);
 }
@@ -123,10 +122,7 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT pDriverObj, PUNICODE_STRING pRegistryString)
 	status = IoCreateDevice(pDriverObj, 0, &ustrDevName, FILE_DEVICE_UNKNOWN, 0, FALSE, &pDevObj);
 	if(!NT_SUCCESS(status))	return status;
 	//判断支持的WDM版本，其实这个已经不需要了，纯属WIN9X和WINNT并存时代的残留物
-	if(IoIsWdmVersionAvailable(1, 0x10))
-		RtlInitUnicodeString(&ustrLinkName, LINK_GLOBAL_NAME);
-	else
-		RtlInitUnicodeString(&ustrLinkName, LINK_NAME);
+	RtlInitUnicodeString(&ustrLinkName, LINK_GLOBAL_NAME);
 	//创建符号连接
 	status = IoCreateSymbolicLink(&ustrLinkName, &ustrDevName);  	
 	if(!NT_SUCCESS(status))
@@ -138,3 +134,4 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT pDriverObj, PUNICODE_STRING pRegistryString)
 	//返回加载驱动的状态（如果返回失败，驱动讲被清除出内核空间）
 	return STATUS_SUCCESS;
 }
+
