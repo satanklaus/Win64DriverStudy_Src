@@ -1,6 +1,6 @@
-#define __INTRINSIC_DEFINED__InterlockedAdd64
+#include "../include/common.h"
+#include "../include/dirty.h"
 #include <ntddk.h>
-#define DRVNAME "InKrnlHW64"
 
 VOID DriverUnload(PDRIVER_OBJECT pDriverObj)
 {	

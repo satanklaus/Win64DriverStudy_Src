@@ -1,18 +1,17 @@
-#define __INTRINSIC_DEFINED__InterlockedAdd64
 /*
 	WIN64驱动开发模板
 	作者：Tesla.Angela
 */
 
 //【0】包含的头文件，可以加入系统或自己定义的头文件
+#include "../include/dirty.h"
+#include "../include/common.h"
 #include <ntddk.h>
 #include <windef.h>
 
-#define DRVNAME "InKrnlHW64"
-
 //【1】定义符号链接，一般来说修改为驱动的名字即可
-#define	DEVICE_NAME			L"\\Device\\KrnlHW64"
-#define LINK_GLOBAL_NAME	L"\\DosDevices\\KrnlHW64"
+#define	DEVICE_NAME		L"\\Device\\"DRVNAME
+#define LINK_GLOBAL_NAME	L"\\DosDevices\\"DRVNAME
 
 //【2】定义驱动功能号和名字，提供接口给应用程序调用
 #define IOCTL_IO_TEST		CTL_CODE(FILE_DEVICE_UNKNOWN, 0x800, METHOD_BUFFERED, FILE_ANY_ACCESS)
@@ -22,7 +21,7 @@
 VOID DriverUnload(PDRIVER_OBJECT pDriverObj)
 {	
 	UNICODE_STRING strLink;
-	DbgPrint("[KrnlHW64]DriverUnload\n");
+	DbgPrint("["DRVNAME"]DriverUnload\n");
 	//删除符号连接和设备
 	RtlInitUnicodeString(&strLink, LINK_GLOBAL_NAME);
 	IoDeleteSymbolicLink(&strLink);
@@ -32,7 +31,7 @@ VOID DriverUnload(PDRIVER_OBJECT pDriverObj)
 //【4】IRP_MJ_CREATE对应的处理例程，一般不用管它
 NTSTATUS DispatchCreate(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 {
-	DbgPrint("[KrnlHW64]DispatchCreate\n");
+	DbgPrint("["DRVNAME"]DispatchCreate\n");
 	pIrp->IoStatus.Status = STATUS_SUCCESS;
 	pIrp->IoStatus.Information = 0;
 	IoCompleteRequest(pIrp, IO_NO_INCREMENT);
@@ -42,7 +41,7 @@ NTSTATUS DispatchCreate(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 //【5】IRP_MJ_CLOSE对应的处理例程，一般不用管它
 NTSTATUS DispatchClose(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 {
-	DbgPrint("[KrnlHW64]DispatchClose\n");
+	DbgPrint("["DRVNAME"]DispatchClose\n");
 	pIrp->IoStatus.Status = STATUS_SUCCESS;
 	pIrp->IoStatus.Information = 0;
 	IoCompleteRequest(pIrp, IO_NO_INCREMENT);
@@ -58,7 +57,7 @@ NTSTATUS DispatchIoctl(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 	PVOID pIoBuffer;
 	ULONG uInSize;
 	ULONG uOutSize;
-	DbgPrint("[KrnlHW64]DispatchIoctl\n");
+	DbgPrint("["DRVNAME"]DispatchIoctl\n");
 	//获得IRP里的关键数据
 	pIrpStack = IoGetCurrentIrpStackLocation(pIrp);
 	//这个就是传说中的控制码
@@ -87,7 +86,7 @@ NTSTATUS DispatchIoctl(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 		}
 		case IOCTL_SAY_HELLO:
 		{
-			DbgPrint("[KrnlHW64]IOCTL_SAY_HELLO\n");
+			DbgPrint("["DRVNAME"]IOCTL_SAY_HELLO\n");
 			status = STATUS_SUCCESS;
 			break;
 		}
@@ -130,7 +129,7 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT pDriverObj, PUNICODE_STRING pRegistryString)
 		IoDeleteDevice(pDevObj); 
 		return status;
 	}
-	DbgPrint("[KrnlHW64]DriverEntry\n");
+	DbgPrint("["DRVNAME"]DriverEntry\n");
 	//返回加载驱动的状态（如果返回失败，驱动讲被清除出内核空间）
 	return STATUS_SUCCESS;
 }
