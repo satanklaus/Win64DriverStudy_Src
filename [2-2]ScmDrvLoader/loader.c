@@ -1,48 +1,99 @@
 /*============================
-Drvier Control Class (SCM way)
+Drvier Control (SCM way)
 ============================*/
+#include "../include/common.h"
+//////////////////
+//
+//
+SC_HANDLE scm = NULL;
+SC_HANDLE service = NULL;
+//////////////////
 
-#pragma comment(lib,"advapi32.lib")
+DWORD m_dwLastError;
+PCHAR m_pServiceName;
+HANDLE m_hDriver;
+SC_HANDLE m_hSCManager;
+SC_HANDLE m_hService;
 
-class cDrvCtrl
-{
-public:
+BOOL Start();
+BOOL Stop();
+BOOL Remove();
+BOOL Open(PCHAR pLinkName);
+BOOL IoControl(DWORD dwIoCode, PVOID InBuff, DWORD InBuffLen, PVOID OutBuff, DWORD OutBuffLen, DWORD *RealRetBytes);
+BOOL GetSvcHandle(PCHAR pServiceName);
+DWORD CTL_CODE_GEN(DWORD lngFunction);
+
+//////////////////////////
+//DWORD _install(PCHAR pSysPath,PCHAR pServiceName,PCHAR pDisplayName)
+//{
+	scm = OpenSCManager(
+			NULL,//LOCAL PC
+			NULL,//DUMMY
+			SC_MANAGER_ALL_ACCESS);//MAX
+	if (!scm) { return GetLastError(); }
+
+	service = CreateService(
+			scm,
+			DRVNAME,
+			"["DRVNAME"]",
+	                SERVICE_ALL_ACCESS,//MAX
+			SERVICE_KERNEL_DRIVER,
+			SERVICE_DEMAND_START,
+			SERVICE_ERROR_NORMAL,
+	                driverpath,
+			NULL,//no load group
+			NULL,//no tag
+			NULL,//no deps
+			NULL,//def obj name
+			NULL);//ignored pwd
+	if (!service)
+	{
+		m_dwLastError = GetLastError();
+		if (ERROR_SERVICE_EXISTS == m_dwLastError)
+		{
+			m_hService = OpenServiceA(m_hSCManager,m_pServiceName,SERVICE_ALL_ACCESS);
+			if (NULL == m_hService)
+			{
+				CloseServiceHandle(m_hSCManager);
+				return FALSE;
+			}
+		}
+		else
+		{
+			CloseServiceHandle(m_hSCManager);
+			return FALSE;
+		}
+	}
+////}
+//
+
+
+
+
+
+
+
+
+
+
+
+
 	cDrvCtrl()
 	{
-		m_pSysPath = NULL;
 		m_pServiceName = NULL;
 		m_pDisplayName = NULL;
 		m_hSCManager = NULL;
 		m_hService = NULL;
 		m_hDriver = INVALID_HANDLE_VALUE;
 	}
+
 	~cDrvCtrl()
 	{
 		CloseServiceHandle(m_hService);
 		CloseServiceHandle(m_hSCManager);
 		CloseHandle(m_hDriver);
 	}
-public:
-	DWORD m_dwLastError;
-	PCHAR m_pSysPath;
-	PCHAR m_pServiceName;
-	PCHAR m_pDisplayName;
-	HANDLE m_hDriver;
-	SC_HANDLE m_hSCManager;
-	SC_HANDLE m_hService;
-public:
-	BOOL Install(PCHAR pSysPath,PCHAR pServiceName,PCHAR pDisplayName);
-	BOOL Start();
-	BOOL Stop();
-	BOOL Remove();
-	BOOL Open(PCHAR pLinkName);
-	BOOL IoControl(DWORD dwIoCode, PVOID InBuff, DWORD InBuffLen, PVOID OutBuff, DWORD OutBuffLen, DWORD *RealRetBytes);
-private:
-	BOOL GetSvcHandle(PCHAR pServiceName);
-	DWORD CTL_CODE_GEN(DWORD lngFunction);
-protected:
-	//null
-};
+
 
 BOOL cDrvCtrl::GetSvcHandle(PCHAR pServiceName)
 {
@@ -65,40 +116,6 @@ BOOL cDrvCtrl::GetSvcHandle(PCHAR pServiceName)
 	}
 }
 
-BOOL cDrvCtrl::Install(PCHAR pSysPath,PCHAR pServiceName,PCHAR pDisplayName)
-{
-	m_pSysPath = pSysPath;
-	m_pServiceName = pServiceName;
-	m_pDisplayName = pDisplayName;
-	m_hSCManager = OpenSCManagerA(NULL,NULL,SC_MANAGER_ALL_ACCESS);
-	if (NULL == m_hSCManager)
-	{
-		m_dwLastError = GetLastError();
-		return FALSE;
-	}
-	m_hService = CreateServiceA(m_hSCManager,m_pServiceName,m_pDisplayName,
-	                            SERVICE_ALL_ACCESS,SERVICE_KERNEL_DRIVER,SERVICE_DEMAND_START,SERVICE_ERROR_NORMAL,
-	                            m_pSysPath,NULL,NULL,NULL,NULL,NULL);
-	if (NULL == m_hService)
-	{
-		m_dwLastError = GetLastError();
-		if (ERROR_SERVICE_EXISTS == m_dwLastError)
-		{
-			m_hService = OpenServiceA(m_hSCManager,m_pServiceName,SERVICE_ALL_ACCESS);
-			if (NULL == m_hService)
-			{
-				CloseServiceHandle(m_hSCManager);
-				return FALSE;
-			}
-		}
-		else
-		{
-			CloseServiceHandle(m_hSCManager);
-			return FALSE;
-		}
-	}
-	return TRUE;
-}
 
 BOOL cDrvCtrl::Start()
 {
