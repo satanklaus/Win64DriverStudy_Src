@@ -1,90 +1,118 @@
 #include "../include/common.h"
+#include <windef.h>
+#include <winsvc.h> 
+#include <winbase.h> 
+#include <stdio.h> 
+
+#define NO_ERR 		0
+#define ERR_SCM 	1
+#define ERR_SVC_CREATE	2
+#define ERR_SVC_OPEN	3
+#define ERR_SVC_START	4
 
 SC_HANDLE scm = NULL;
 SC_HANDLE service = NULL;
 
-if (!(scm = OpenSCManager(
-	NULL,//LOCAL PC
-	NULL,//DUMMY
-	SC_MANAGER_ALL_ACCESS)))//MAX
-	{ printf("["DRVNAME"]: cannot open SCM\n");
-	return GetLastError(); }
+int err = NO_ERR;
 
-if(!(service = CreateService(
-	scm,
-	DRVNAME,
-	"["DRVNAME"]",
-        SERVICE_ALL_ACCESS,//MAX
-	SERVICE_KERNEL_DRIVER,
-	SERVICE_DEMAND_START,
-	SERVICE_ERROR_NORMAL,
-        driverpath,
-	NULL,//no load group
-	NULL,//no tag
-	NULL,//no deps
-	NULL,//def obj name
-	NULL)))//ignored pwd
-	{
-	if ((err = GetLastError()) == ERROR_SERVICE_EXISTS)
-		{
-		printf("["DRVNAME"]: service exists, lets try to open\n");
-		if (!(service = OpenSerivce(
-			scm,
-			DRVNAME,
-			SERVICE_ALL_ACCESS))) 
-		{ 
-			printf("["DRVNAME"]:totally failed\n");
-			CloseServiceHandle(scm);
-			return GetLastError(); 
-		}
-		else 
-		{
-			printf("["DRVNAME"]: last resort succeed\n");
-		}
-		return err;
-	}
-	else {
-		return NULL;
-	}
+int lasterr = 0;
+
+int main(int argc, char *argv[])
+{
+scm = OpenSCManager(
+  NULL,//LOCAL PC
+  NULL,//DUMMY
+  SC_MANAGER_ALL_ACCESS);//MAX
+if (!scm) 
+{
+  lasterr = GetLastError();
+  printf("["DRVNAME"]: cannot open SCM: %d\n",lasterr);
+  err = ERR_SCM;
+  goto err_scm;
+}
+service = CreateService(
+  scm,
+  DRVNAME,
+  "["DRVNAME"]",
+  SERVICE_ALL_ACCESS,//MAX
+  SERVICE_KERNEL_DRIVER,
+  SERVICE_DEMAND_START,
+  SERVICE_ERROR_NORMAL,
+  //driverpath,
+  (LPCSTR)L"TEST",
+  NULL,//no load group
+  NULL,//no tag
+  NULL,//no deps
+  NULL,//def obj name
+  NULL);//ignored pwd
+if (!service)
+{
+  lasterr = GetLastError(); 
+  if (lasterr != ERROR_SERVICE_EXISTS) 
+  {
+    printf("["DRVNAME"]: cannot create SVC: %d\n",lasterr);
+    err = ERR_SVC_CREATE;
+    goto err_svc_create;
+  }
+  else 
+  {
+    service = OpenService(
+      scm,
+      DRVNAME,
+      SERVICE_ALL_ACCESS);
+    if (!service) 
+    {
+      lasterr = GetLastError();
+      printf("["DRVNAME"]: cannot open SCM: %d\n",lasterr);
+      err = ERR_SVC_OPEN;
+      goto err_svc_open;
+    } 
+  }
+}
 printf("["DRVNAME"]: service successfully created\n");
-	
-
-
-/////////////////
-
-	if (!StartServiceA(m_hService,NULL,NULL))
-	{
-		m_dwLastError = GetLastError();
-		return FALSE;
-	}
-	return TRUE;
-
-	SERVICE_STATUS ss;
-	if (!ControlService(m_hService,SERVICE_CONTROL_STOP,&ss))
-	{
-		m_dwLastError = GetLastError();
-		return FALSE;
-	}
-	return TRUE;
-
-
-	if (!DeleteService(m_hService))
-	{
-		m_dwLastError = GetLastError();
-		return FALSE;
-	}
-	return TRUE;
+if(!StartServiceA(
+  service,
+  0,//num of args
+  NULL))//args
+{
+  lasterr = GetLastError();
+  printf("["DRVNAME"]: cannot start driver: %d\n",lasterr);
+  err = ERR_SVC_START;
+  goto err_svc_start;
 }
 
-	m_hDriver = CreateFileA(pLinkName, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	if(m_hDriver != INVALID_HANDLE_VALUE)
-		return TRUE;
-	else
-		return FALSE;
+//FINALIZE
+err_svc_start:
+  DeleteService(service);
+err_svc_create:
+err_svc_open:
+  CloseServiceHandle(scm);
+err_scm:
+quit:
+  return err;
+ }
+
+/*////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+  SERVICE_STATUS ss;
+  if (!ControlService(m_hService,SERVICE_CONTROL_STOP,&ss))
+  {
+    m_dwLastError = GetLastError();
+    return FALSE;
+  }
+  return TRUE;
+
+
+  m_hDriver = CreateFileA(pLinkName, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+  if(m_hDriver != INVALID_HANDLE_VALUE)
+    return TRUE;
+  else
+    return FALSE;
 }
 
-	BOOL b=DeviceIoControl(m_hDriver,CTL_CODE_GEN(dwIoCode),InBuff,InBuffLen,OutBuff,OutBuffLen,&dw,NULL);
-	if(RealRetBytes)
-		*RealRetBytes=dw;
-	return b;
+  BOOL b=DeviceIoControl(m_hDriver,CTL_CODE_GEN(dwIoCode),InBuff,InBuffLen,OutBuff,OutBuffLen,&dw,NULL);
+  if(RealRetBytes)
+    *RealRetBytes=dw;
+  return b;
 }
+*/
